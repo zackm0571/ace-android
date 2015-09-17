@@ -36,6 +36,8 @@ import org.linphone.mediastream.Log;
 
 import android.content.Context;
 
+import com.vatrp.R;
+
 /**
  * @author Sylvain Berfini
  */
@@ -790,10 +792,8 @@ public class LinphonePreferences {
 				bandwidth = 1024 + 128;
 			} else if (preferredVideoSize.equals("vga")) {
 				bandwidth = 660;
-			} else if (preferredVideoSize.equals("cif")) {
-				bandwidth = 460;
 			} else if (preferredVideoSize.equals("qvga")) {
-				bandwidth = 410;
+				bandwidth = 380;
 			} else if (preferredVideoSize.equals("qcif")) {
 				bandwidth = 256;
 			}

@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="org.linphone"
-      android:versionCode="2411" android:installLocation="auto">
+      package="com.vatrp"
+      android:versionCode="1" android:versionName="1.0.0" android:installLocation="auto">
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="22"/>
     
     <!-- Permissions for Push Notification -->
-    <permission android:name="org.linphone.vtcsecure.permission.C2D_MESSAGE" android:protectionLevel="signature" /> <!-- Change package ! -->
-	<uses-permission android:name="org.linphone.vtcsecure.permission.C2D_MESSAGE" />  <!-- Change package ! -->
+    <permission android:name="org.linphone.permission.C2D_MESSAGE" android:protectionLevel="signature" /> <!-- Change package ! -->
+	<uses-permission android:name="org.linphone.permission.C2D_MESSAGE" />  <!-- Change package ! -->
 	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.RECORD_AUDIO"/>
 	<uses-permission android:name="android.permission.READ_CONTACTS"/>
 	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
@@ -22,8 +21,6 @@
 	<uses-feature 	 android:name="android.hardware.telephony" android:required="false" /> 
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 	<uses-permission android:name="android.permission.VIBRATE"/>
-	<uses-permission android:name="android.permission.FLASHLIGHT"/>
-	<uses-feature android:name="android.hardware.camera.flash" android:required="false" />
 	<uses-permission android:name="android.permission.CAMERA" />
 	<!-- Needed to allow Linphone to install on tablets, since android.permission.CAMERA implies android.hardware.camera and android.hardware.camera.autofocus are required -->
 	<uses-feature 	 android:name="android.hardware.camera" android:required="false" />
@@ -206,7 +203,7 @@
 		  <intent-filter>
 		    <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 		    <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-		    <category android:name="org.linphone.vtcsecure" /> <!-- Change package ! -->
+		    <category android:name="org.linphone" /> <!-- Change package ! -->
 		  </intent-filter>
 		</receiver>
 		
@@ -246,6 +243,10 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+		<activity
+		    android:theme="@style/NoTitle"
+		     android:name=".custom.LoginMainActivity"></activity>
+		<activity android:name=".custom.LoginProviderActivity"></activity>
 	
 	</application>
 

@@ -67,7 +67,6 @@ import org.linphone.mediastream.Version;
 import org.linphone.mediastream.video.capture.hwconf.AndroidCameraConfiguration;
 import org.linphone.mediastream.video.capture.hwconf.AndroidCameraConfiguration.AndroidCamera;
 import org.linphone.mediastream.video.capture.hwconf.Hacks;
-import org.linphone.vtcsecure.LinphoneTorchFlasher;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -101,6 +100,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import com.vatrp.R;
 
 /**
  *
@@ -358,7 +359,6 @@ public class LinphoneManager implements LinphoneCoreListener {
 
 	public void enableCamera(LinphoneCall call, boolean enable) {
 		if (call != null) {
-			LinphoneTorchFlasher.instance().stopFlashTorch();
 			call.enableCamera(enable);
 			if (mServiceContext.getResources().getBoolean(R.bool.enable_call_notification))
 				LinphoneService.instance().refreshIncallIcon(mLc.getCurrentCall());
@@ -556,7 +556,7 @@ public class LinphoneManager implements LinphoneCoreListener {
 		copyIfNotExist(R.raw.linphonerc_default, mLinphoneConfigFile);
 		copyFromPackage(R.raw.linphonerc_factory, new File(mLinphoneFactoryConfigFile).getName());
 		copyIfNotExist(R.raw.lpconfig, mLPConfigXsd);
-		copyIfNotExist(R.raw.rootca, mLinphoneRootCaFile);
+		//copyIfNotExist(R.raw.rootca, mLinphoneRootCaFile);
 	}
 
 	public void copyIfNotExist(int ressourceId, String target) throws IOException {

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="main_app_color">#ff8c00</color>
+    <color name="main_app_color">#ffcf4c29</color>
     
-    <color name="text_selected">#ff8c00</color>
+    <color name="text_selected">#ffcf4c29</color>
     <color name="text_over">#ffb9c4cb</color>
     <color name="text_default">#ff5b656f</color>
     <color name="text_disabled">#ffa6b3bf</color>
@@ -14,13 +14,13 @@
     <color name="text_button">#ff41484f</color>
     <color name="text_button_disabled">#ffa6b3bf</color>
     <color name="text_button_selected">#ff41484f</color>
-    <color name="text_button_over">#ff8c00</color>
+    <color name="text_button_over">#ffcf4c29</color>
     
     <color name="numpad_background_bottom">#ffe4edf2</color>
     <color name="numpad_background_dialer">#ffd8d8d8</color>
     <color name="numpad_background_top">#ffb1bdc3</color>
     
-    <color name="missed_calls_background">#ff8c00</color>
+    <color name="missed_calls_background">#ffcf4c29</color>
     
     <color name="transparent">#00000000</color>
     
@@ -28,4 +28,12 @@
     
     <color name="text_contrast">#ff000000</color> <!-- If background is white, set to black, else set to white -->
     <color name="menu_button_background">#ff262a2e</color>
+    <drawable name="btn_white">#efefef</drawable>
+    <drawable name="btn_white_selected">#D7D7D7</drawable>
+    
+    <drawable name="btn_blue">#001b2b</drawable>
+    <drawable name="btn_blue_selected">#001622</drawable>
+    
+    <drawable name="ab_def">#FFF</drawable>
+    <drawable name="ab_select">#CCC</drawable>
 </resources>

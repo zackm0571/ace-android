@@ -50,7 +50,8 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
-import android.widget.EditText;
+
+import com.vatrp.R;
 
 /**
  * @author Sylvain Berfini
@@ -125,6 +126,7 @@ public class SettingsFragment extends PreferencesListFragment {
 		findPreference(getString(R.string.setup_key)).setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
+				deleteAll();
 				Intent intent = new Intent(LinphoneService.instance(), SetupActivity.class);
 				startActivityForResult(intent, WIZARD_INTENT);
 				return true;
@@ -307,6 +309,18 @@ public class SettingsFragment extends PreferencesListFragment {
 		});
 	}
 
+	private void deleteAll()
+	{
+		PreferenceCategory accounts = (PreferenceCategory) findPreference(getString(R.string.pref_sipaccounts_key));
+		accounts.removeAll();
+
+		// Get already configured extra accounts
+		int defaultAccountID = mPrefs.getDefaultAccountIndex();
+		int nbAccounts = mPrefs.getAccountCount();
+		for (int i = 0; i < nbAccounts; i++) {
+			LinphonePreferences.instance().deleteAccount(i);
+		}
+	}
 	private void initAccounts() {
 		PreferenceCategory accounts = (PreferenceCategory) findPreference(getString(R.string.pref_sipaccounts_key));
 		accounts.removeAll();
@@ -319,7 +333,7 @@ public class SettingsFragment extends PreferencesListFragment {
 			// For each, add menus to configure it
 			String username = mPrefs.getAccountUsername(accountId);
 			String domain = mPrefs.getAccountDomain(accountId);
-			LedPreference account = new LedPreference(LinphoneService.instance());
+			LedPreference account = new LedPreference(getActivity());
 
 			if (username == null) {
 				account.setTitle(getString(R.string.pref_sipaccount));
@@ -438,7 +452,7 @@ public class SettingsFragment extends PreferencesListFragment {
 		entries.add("custom");
 		values.add("custom");
 		setListPreferenceValues(pref, entries, values);
-		String value = mPrefs.getVideoPreset();
+		String value = "custom"; //samson mPrefs.getVideoPreset();
 		pref.setSummary(value);
 		pref.setValue(value);
 	}
@@ -625,7 +639,7 @@ public class SettingsFragment extends PreferencesListFragment {
 
 		LinphoneCore lc = LinphoneManager.getLcIfManagerNotDestroyedOrNull();
 		for (final PayloadType pt : lc.getVideoCodecs()) {
-			CheckBoxPreference codec = new CheckBoxPreference(LinphoneService.instance());
+			CheckBoxPreference codec = new CheckBoxPreference(getActivity());
 			codec.setTitle(pt.getMime());
 
 			if (!pt.getMime().equals("VP8")) {

@@ -19,8 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 package org.linphone.ui;
 
 import org.linphone.LinphoneManager;
-import org.linphone.LinphonePreferences;
-import org.linphone.R;
+import com.vatrp.R;
 import org.linphone.core.CallDirection;
 import org.linphone.core.LinphoneCallLog;
 import org.linphone.core.LinphoneCoreException;
@@ -53,10 +52,6 @@ public class CallButton extends ImageView implements OnClickListener, AddressAwa
 		try {
 			if (!LinphoneManager.getInstance().acceptCallIfIncomingPending()) {
 				if (mAddress.getText().length() > 0) { 
-					if (mAddress.getTag() != null) {
-						mAddress.setText(mAddress.getText()+(String)mAddress.getTag());
-						mAddress.setDisplayedName(mAddress.getText().toString());
-					}
 					LinphoneManager.getInstance().newOutgoingCall(mAddress);
 				} else {
 					if (getContext().getResources().getBoolean(R.bool.call_last_log_if_adress_is_empty)) {

@@ -2,7 +2,7 @@ package org.linphone.compatibility;
 
 import java.util.ArrayList;
 
-import org.linphone.R;
+import com.vatrp.R;
 import org.linphone.mediastream.Log;
 
 import android.annotation.TargetApi;
@@ -165,5 +165,19 @@ public class ApiElevenPlus {
 		intent.putParcelableArrayListExtra(Insert.DATA, data);
 		
 		return intent;
+	}
+
+	@SuppressWarnings("deprecation")
+	public static Notification createSimpleNotification(Context context, String title, String text, PendingIntent intent) {
+		Notification notif = new Notification.Builder(context)
+		.setContentTitle(title)
+		.setContentText(text)
+		.setContentIntent(intent)
+		.setSmallIcon(R.drawable.logo_linphone_57x57)
+		.setAutoCancel(true)
+		.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE)
+		.setWhen(System.currentTimeMillis()).getNotification();
+
+		return notif;
 	}
 }

@@ -1,37 +1,21 @@
 [net]
-download_bw=660
-upload_bw=660
+download_bw=380
+upload_bw=380
 
 [sip]
-contact="VTCSecure Android" <sip:vtcsecure.android@unknown-host>
+contact="Linphone Android" <sip:linphone.android@unknown-host>
 use_info=0
 use_ipv6=0
 keepalive_period=30000
-media_encryption=srtp
 
 [video]
-size=vga
-automatically_initiate=1
-automatically_accept=1
-preset=high-fps
+size=qvga
 
 [app]
 sharing_server=https://www.linphone.org:444/lft.php
 tunnel=disabled
+push_notification=1
 
 [tunnel]
 host=
 port=443
-
-[vtcsecure]
-incoming_flashlight_frequency=0.3
-incoming_flashred_frequency=0.3
-incoming_vibrate_frequency=2.0
-outgoing_ring_duration=2.8
-emergency_username=911
-external_domains=Sorenson.com,ZVRS.com,CAAG.com,PurpleVRS.com,GlobalVRS.com,Convo.com
-
-[rtp]
-rtcp_xr_enabled=0
-
-

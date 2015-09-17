@@ -15,12 +15,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
+*/
 package org.linphone;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.linphone.core.LinphoneAddress;
 import org.linphone.core.LinphoneCall;
@@ -32,17 +30,14 @@ import org.linphone.mediastream.Log;
 import org.linphone.ui.AvatarWithShadow;
 import org.linphone.ui.LinphoneSliders;
 import org.linphone.ui.LinphoneSliders.LinphoneSliderTriggered;
-import org.linphone.vtcsecure.LinphoneTorchFlasher;
+
+import com.vatrp.R;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.view.KeyEvent;
 import android.view.WindowManager;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,29 +50,22 @@ import android.widget.Toast;
 public class IncomingCallActivity extends Activity implements LinphoneSliderTriggered {
 
 	private static IncomingCallActivity instance;
-
+	
 	private TextView mNameView;
 	private TextView mNumberView;
 	private AvatarWithShadow mPictureView;
 	private LinphoneCall mCall;
 	private LinphoneSliders mIncomingCallWidget;
 	private LinphoneCoreListenerBase mListener;
-	private RelativeLayout topLayout; 
-	private Boolean backgroundIsRed = false;
-	private Boolean torhcIsOn = false;
-	private Timer flashRedBackgroundTimer;
-	private Timer vibrateTimer;
-	private boolean terminated = false;
-
-
+	
 	public static IncomingCallActivity instance() {
 		return instance;
 	}
-
+	
 	public static boolean isInstanciated() {
 		return instance != null;
 	}
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -86,30 +74,29 @@ public class IncomingCallActivity extends Activity implements LinphoneSliderTrig
 		mNameView = (TextView) findViewById(R.id.incoming_caller_name);
 		mNumberView = (TextView) findViewById(R.id.incoming_caller_number);
 		mPictureView = (AvatarWithShadow) findViewById(R.id.incoming_picture);
-		topLayout = (RelativeLayout)findViewById(R.id.topLayout);
 
-		// set this flag so this activity will stay in front of the keyguard
-		int flags = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON;
-		getWindow().addFlags(flags);
+        // set this flag so this activity will stay in front of the keyguard
+        int flags = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON;
+        getWindow().addFlags(flags);
 
-		// "Dial-to-answer" widget for incoming calls.
-		mIncomingCallWidget = (LinphoneSliders) findViewById(R.id.sliding_widget);
-		mIncomingCallWidget.setOnTriggerListener(this);
+        // "Dial-to-answer" widget for incoming calls.
+        mIncomingCallWidget = (LinphoneSliders) findViewById(R.id.sliding_widget);
+        mIncomingCallWidget.setOnTriggerListener(this);
+        
+        mListener = new LinphoneCoreListenerBase(){
+        	@Override
+        	public void callState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State state, String message) {
+        		if (call == mCall && State.CallEnd == state) {
+        			finish();
+        		}
+        		if (state == State.StreamsRunning) {
+        			// The following should not be needed except some devices need it (e.g. Galaxy S).
+        			LinphoneManager.getLc().enableSpeaker(LinphoneManager.getLc().isSpeakerEnabled());
+        		}
+        	}
+        };
 
-		mListener = new LinphoneCoreListenerBase(){
-			@Override
-			public void callState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State state, String message) {
-				if (call == mCall && State.CallEnd == state) {
-					finish();
-				}
-				if (state == State.StreamsRunning) {
-					// The following should not be needed except some devices need it (e.g. Galaxy S).
-					LinphoneManager.getLc().enableSpeaker(LinphoneManager.getLc().isSpeakerEnabled());
-				}
-			}
-		};
-
-		super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
 		instance = this;
 	}
 
@@ -117,18 +104,11 @@ public class IncomingCallActivity extends Activity implements LinphoneSliderTrig
 	protected void onResume() {
 		super.onResume();
 		instance = this;
-
-		// VTCSecure
-
-		flashRedBackground();
-		flashTorch();
-		vibrate();
-
 		LinphoneCore lc = LinphoneManager.getLcIfManagerNotDestroyedOrNull();
 		if (lc != null) {
 			lc.addListener(mListener);
 		}
-
+		
 		// Only one call ringing at a time is allowed
 		if (LinphoneManager.getLcIfManagerNotDestroyedOrNull() != null) {
 			List<LinphoneCall> calls = LinphoneUtils.getLinphoneCalls(LinphoneManager.getLc());
@@ -148,7 +128,7 @@ public class IncomingCallActivity extends Activity implements LinphoneSliderTrig
 		// May be greatly sped up using a drawable cache
 		Contact contact = ContactsManager.getInstance().findContactWithAddress(getContentResolver(), address);
 		LinphoneUtils.setImagePictureFromUri(this, mPictureView.getView(), contact != null ? contact.getPhotoUri() : null,
-				contact != null ? contact.getThumbnailUri() : null, R.drawable.unknown_small);
+				 contact != null ? contact.getThumbnailUri() : null, R.drawable.unknown_small);
 
 		// To be done after findUriPictureOfContactAndSetDisplayName called
 		mNameView.setText(contact != null ? contact.getName() : "");
@@ -158,24 +138,22 @@ public class IncomingCallActivity extends Activity implements LinphoneSliderTrig
 			mNumberView.setText(address.asStringUriOnly());
 		}
 	}
-
+	
 	@Override
 	protected void onPause() {
-		terminated = true;
-		LinphoneTorchFlasher.instance().stopFlashTorch();
 		LinphoneCore lc = LinphoneManager.getLcIfManagerNotDestroyedOrNull();
 		if (lc != null) {
 			lc.removeListener(mListener);
 		}
 		super.onPause();
 	}
-
+	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		instance = null;
 	}
-
+	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (LinphoneManager.isInstanciated() && (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_HOME)) {
@@ -186,71 +164,20 @@ public class IncomingCallActivity extends Activity implements LinphoneSliderTrig
 	}
 
 
-	private void flashRedBackground () {
-		flashRedBackgroundTimer = new Timer();
-		float flashFrequencyInSeconds = LinphonePreferences.instance().getConfig().getFloat("vtcsecure", "incoming_flashred_frequency", 0.3f);
-		flashRedBackgroundTimer.schedule(new TimerTask() {          
-			@Override
-			public void run() {
-				IncomingCallActivity.this.runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						if (terminated) {
-							flashRedBackgroundTimer.cancel();
-						} else {
-							if (backgroundIsRed) topLayout.setBackgroundColor(Color.TRANSPARENT);
-							else topLayout.setBackgroundColor(Color.RED);
-							backgroundIsRed = !backgroundIsRed;		
-						}
-					}
-				});
-			}
-		}, 0, (long)(flashFrequencyInSeconds*1000));
-	}
 
-
-	private void vibrate() {
-		vibrateTimer= new Timer();
-		float vibrateFrequencyInSeconds = LinphonePreferences.instance().getConfig().getFloat("vtcsecure", "incoming_vibrate_frequency", 0.3f);
-		final Vibrator v = (Vibrator) this.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-
-		vibrateTimer.schedule(new TimerTask() {          
-			@Override
-			public void run() {
-				IncomingCallActivity.this.runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						if (terminated) vibrateTimer.cancel();
-						else v.vibrate(500);				
-					}
-				});
-			}
-		}, 0, (long)(vibrateFrequencyInSeconds*1000));
-
-	}
-
-	private void flashTorch() {
-		if (!getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) return;
-		LinphoneTorchFlasher.instance().startFlashTorch();
-	}
-
-	
 	private void decline() {
-		LinphoneTorchFlasher.instance().stopFlashTorch();
 		LinphoneManager.getLc().terminateCall(mCall);
 	}
-
+	
 	private void answer() {
-		
-		LinphoneTorchFlasher.instance().stopFlashTorch();
 		LinphoneCallParams params = LinphoneManager.getLc().createDefaultCallParameters();
-
+		
 		boolean isLowBandwidthConnection = !LinphoneUtils.isHighBandwidthConnection(this);
 		if (isLowBandwidthConnection) {
 			params.enableLowBandwidth(true);
 			Log.d("Low bandwidth enabled in call params");
 		}
-
+		
 		if (!LinphoneManager.getInstance().acceptCallWithParams(mCall, params)) {
 			// the above method takes care of Samsung Galaxy S
 			Toast.makeText(this, R.string.couldnt_accept_call, Toast.LENGTH_LONG).show();

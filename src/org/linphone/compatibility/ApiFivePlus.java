@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.linphone.Contact;
-import org.linphone.R;
+import com.vatrp.R;
 import org.linphone.core.LinphoneAddress;
 
 import android.annotation.TargetApi;
@@ -398,6 +398,22 @@ public class ApiFivePlus {
 			notif.flags |= Notification.FLAG_ONGOING_EVENT;
 		}
 		notif.setLatestEventInfo(context, title, message, intent);
+		
+		return notif;
+	}
+
+	public static Notification createSimpleNotification(Context context, String title, String text, PendingIntent intent) {
+		Notification notif = new Notification();
+		notif.icon = R.drawable.logo_linphone_57x57;
+		notif.iconLevel = 0;
+		notif.when = System.currentTimeMillis();
+		notif.flags &= Notification.FLAG_ONGOING_EVENT;
+		
+		notif.defaults |= Notification.DEFAULT_VIBRATE;
+		notif.defaults |= Notification.DEFAULT_SOUND;
+		notif.defaults |= Notification.DEFAULT_LIGHTS;
+		
+		notif.setLatestEventInfo(context, title, text, intent);
 		
 		return notif;
 	}
