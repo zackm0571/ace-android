@@ -96,6 +96,9 @@ public class VideoCallFragment extends Fragment implements OnGestureListener, On
 					case MotionEvent.ACTION_MOVE:
 						int x = (int) motionEvent.getX();
 						int y = (int) motionEvent.getY();
+
+						if(mCaptureView == null){ break; }
+
 						RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mCaptureView.getLayoutParams();
 						lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0); // Clears the rule, as there is no removeRule until API 17.
 						lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
